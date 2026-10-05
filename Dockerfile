@@ -1,11 +1,13 @@
-FROM ubuntu:25.04
+FROM ubuntu:26.04
 
-RUN mkdir -p /tmp/app
+ENV DEBIAN_FRONTEND=noninteractive
+ENV MAIN_FILE=main.tex
+
 WORKDIR /tmp/app
 
-RUN apt-get update
-RUN apt-get upgrade -y
-RUN apt-get install -y texlive-full
-RUN apt-get clean
+RUN apt-get update \
+ && apt-get install -y texlive-full \
+ && apt-get clean \
+ && rm -rf /var/lib/apt/lists/*
 
-CMD ["pdflatex", "main.tex"]
+CMD ["sh", "-c", "exec pdflatex -interaction=nonstopmode \"$MAIN_FILE\""]
